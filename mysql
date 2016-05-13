@@ -1,0 +1,27 @@
+class mysql::install {
+
+include nginx::install
+
+package { 'mysql':
+
+          ensure => installed ,
+}
+file { '/var/www/mysql.html':
+       ensure => file,
+       source => 'puppet:///modules/mysql/mysql.html',
+   }
+file { '/tmp/mysql.conf':
+	ensure => file,
+	require => Package['mysql'],
+        source => 'puppet:///modules/mysql/mysql.conf',
+        notify => Service['nginx'],
+}
+user { 'sql':
+  comment => 'SQL',
+  home    => '/home/sql',
+  ensure  => present,
+  #uid    => '501',
+  #gid    => '20'
+}
+
+}
